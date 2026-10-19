@@ -1,0 +1,41 @@
+const buildProbTable = (rows) => rows.map((row) => `
+  <tr>
+    <td>${row.click_number}</td>
+    <td>${row.conditional_survival.toFixed(4)}</td>
+    <td>${row.cumulative_survival.toFixed(4)}</td>
+    <td>${row.loss_by_click.toFixed(4)}</td>
+  </tr>
+`).join('');
+
+const renderProbability = async () => {
+  const mineCount = Number(document.getElementById('mine-count').value);
+  const targetClicks = Number(document.getElementById('target-clicks').value);
+  const res = await fetch(`/api/probabilities?mine_count=${mineCount}&max_clicks=5&target_clicks=${targetClicks}`);
+  const rows = await res.json();
+  document.getElementById('table-body').innerHTML = buildProbTable(rows);
+
+  const survivalRes = await fetch(`/api/survival?mine_count=${mineCount}&target_clicks=${targetClicks}`);
+  const survival = await survivalRes.json();
+  document.getElementById('probability-output').innerHTML = `
+    <p><strong>Survival:</strong> ${(survival.survival_probability * 100).toFixed(2)}%</p>
+    <p><strong>Loss:</strong> ${(survival.loss_probability * 100).toFixed(2)}%</p>
+  `;
+};
+
+const renderRecommendation = async () => {
+  const recRes = await fetch('/api/recommendation');
+  const recommendation = await recRes.json();
+  const recommendationEl = document.getElementById('recommendation-output');
+  recommendationEl.innerHTML = `
+    <p><strong>Action:</strong> ${recommendation.action}</p>
+    <p><strong>Mine count:</strong> ${recommendation.mine_count}</p>
+    <p><strong>Target clicks:</strong> ${recommendation.target_clicks}</p>
+    <p><strong>Survival probability:</strong> ${(recommendation.survival_probability * 100).toFixed(2)}%</p>
+    <p><strong>Loss probability:</strong> ${(recommendation.loss_probability * 100).toFixed(2)}%</p>
+    <p><strong>Stake:</strong> ${recommendation.proposed_stake}</p>
+  `;
+};
+
+document.getElementById('calculate-btn').addEventListener('click', renderProbability);
+renderProbability();
+renderRecommendation();

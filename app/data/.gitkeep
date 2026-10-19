@@ -1,0 +1,28 @@
+import tempfile
+from pathlib import Path
+
+from app.ingestion import parse_log_file
+
+
+def test_parse_csv_log():
+    csv_content = "round_id,mine_count,bet_amount,target_clicks,actual_clicks\nA1,3,10,2,2\nA2,5,5,1,1\n"
+    with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False) as handle:
+        handle.write(csv_content)
+        path = Path(handle.name)
+    rows = parse_log_file(path)
+    assert len(rows) == 2
+    assert rows[0]["round_id"] == "A1"
+    path.unlink(missing_ok=True)
+
+
+def test_parse_json_log():
+    payload = [{"round_id": "B1", "mine_count": 3, "bet_amount": 10, "target_clicks": 2, "actual_clicks": 2}]
+    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as handle:
+        import json
+
+        json.dump(payload, handle)
+        path = Path(handle.name)
+    rows = parse_log_file(path)
+    assert len(rows) == 1
+    assert rows[0]["round_id"] == "B1"
+    path.unlink(missing_ok=True)

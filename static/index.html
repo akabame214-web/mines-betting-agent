@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Acebet Mines AI Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Acebet Mines AI Agent</p>
+          <h1>Risk-controlled analysis dashboard</h1>
+        </div>
+        <span class="status-pill" id="live-status">SIMULATION</span>
+      </header>
+
+      <main class="grid">
+        <section class="card">
+          <h2>Probability engine</h2>
+          <label>
+            Mine count
+            <input id="mine-count" type="number" min="1" max="24" value="3" />
+          </label>
+          <label>
+            Target clicks
+            <input id="target-clicks" type="number" min="1" value="2" />
+          </label>
+          <button id="calculate-btn">Calculate</button>
+          <div id="probability-output" class="output-box"></div>
+        </section>
+
+        <section class="card">
+          <h2>Latest recommendation</h2>
+          <div id="recommendation-output" class="output-box"></div>
+        </section>
+      </main>
+
+      <section class="card full-width">
+        <h2>Probability table</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Click</th>
+              <th>Cond. survive</th>
+              <th>Cum. survive</th>
+              <th>Loss by click</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </section>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
